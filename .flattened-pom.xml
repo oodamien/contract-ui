@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.spring.start</groupId>
+    <artifactId>start-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>io.spring.start</groupId>
+  <artifactId>start-client</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>start.spring.io client</name>
+  <description>Parent pom providing dependency and plugin management for applications
+		built with Maven</description>
+  <url>https://projects.spring.io/spring-boot/#/spring-boot-starter-parent/start-parent/start-client</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Pivotal</name>
+      <email>info@pivotal.io</email>
+      <organization>Pivotal Software, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <url>https://github.com/spring-projects/spring-boot/spring-boot-starter-parent/start-parent/start-client</url>
+  </scm>
+</project>
