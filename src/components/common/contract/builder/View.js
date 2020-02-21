@@ -55,10 +55,20 @@ const useStyles = makeStyles(theme =>
     value: {
       display: 'inline-block',
       verticalAlign: 'top',
+      margin: 0,
       marginLeft: '6px',
+      padding: 0,
+      fontFamily: theme.typography.fontFamily,
+      fontWeight: 'bold',
     },
   })
 )
+
+function isObject(value) {
+  return (
+    (typeof value === 'object' || typeof value === 'function') && value !== null
+  )
+}
 
 function Line({ contract, id, label, value, level }) {
   const classes = useStyles()
@@ -70,9 +80,15 @@ function Line({ contract, id, label, value, level }) {
         {value ? ':' : ''}
       </span>
       {value && (
-        <strong className={classes.value}>
-          {JSON.stringify(value, null, 2)}
-        </strong>
+        <span>
+          {isObject(value) ? (
+            <pre className={classes.value}>
+              {JSON.stringify(value, null, 2)}
+            </pre>
+          ) : (
+            <strong className={classes.value}>{value}</strong>
+          )}
+        </span>
       )}
       <IconButton
         aria-label='delete'
@@ -196,10 +212,6 @@ export default function View() {
           </div>
         )
       })}
-
-      <pre>
-        <code>{JSON.stringify(json, null, 2)}</code>
-      </pre>
     </div>
   )
 }
