@@ -15,7 +15,15 @@ import useWindowDimensions from '../../../utils/WindowDimensions'
 import { AppContext } from '../../../reducer/App'
 import { ContractContext } from '../../../reducer/Contract'
 
-function render(item, level, classes, itemsClosed, setItemsClosed, setSelect) {
+function render(
+  contract,
+  item,
+  level,
+  classes,
+  itemsClosed,
+  setItemsClosed,
+  setSelect
+) {
   let closed = false
   const clazzLink = clsx(get(classes, `link${level}`), get(classes, `link`))
   const key = get(item, 'key')
@@ -30,7 +38,10 @@ function render(item, level, classes, itemsClosed, setItemsClosed, setSelect) {
         button
         key={`li${key}`}
         onClick={() => {
-          setSelect(item)
+          console.log(item.key)
+          const value = get(contract, `json.${item.key}`, '')
+          console.log(contract.JSON)
+          setSelect({ ...item, value })
         }}
       >
         <ListItemText key={`it${key}`}>{item.name}</ListItemText>
@@ -81,6 +92,7 @@ function render(item, level, classes, itemsClosed, setItemsClosed, setSelect) {
         >
           {get(item, 'children').map(child =>
             render(
+              contract,
               child,
               level + 1,
               classes,
@@ -162,7 +174,8 @@ export default function Builder() {
   const classes = useStyles()
   const { height } = useWindowDimensions()
   const { config, select: selectContract } = useContext(AppContext)
-  const { dispatch } = useContext(ContractContext)
+  const { contracts, dispatch } = useContext(ContractContext)
+  const contract = contracts.find(c => c.filename === selectContract)
   const [itemsClosed, setItemsClosed] = useState([])
   const [select, setSelect] = useState(null)
   return (
@@ -175,7 +188,15 @@ export default function Builder() {
         className={classes.root}
       >
         {config.properties.map(prop =>
-          render(prop, 0, classes, itemsClosed, setItemsClosed, setSelect)
+          render(
+            contract,
+            prop,
+            0,
+            classes,
+            itemsClosed,
+            setItemsClosed,
+            setSelect
+          )
         )}
       </List>
       <Edit
@@ -185,7 +206,7 @@ export default function Builder() {
         onValidate={value => {
           setSelect(null)
           dispatch({
-            type: 'CONTRACT_ADD_LINE',
+            type: 'CONTRACT_LINE',
             payload: { filename: selectContract, line: select, value },
           })
         }}

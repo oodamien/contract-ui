@@ -124,14 +124,24 @@ function reducer(state, action) {
       target.isValid = reduce.isValid
       return { contracts }
     }
-    case 'CONTRACT_ADD_LINE': {
+    case 'CONTRACT_LINE': {
       const contracts = [...state.contracts]
       const target = contracts.find(
         contract => contract.filename === get(action, 'payload.filename')
       )
 
       const json = get(target, 'json', {})
-      set(json, get(action, 'payload.line.key'), get(action, 'payload.value'))
+      let value = get(action, 'payload.value')
+
+      try {
+        value = JSON.parse(value)
+      } catch (e) {
+        value = get(action, 'payload.value')
+      }
+
+      console.log(value)
+
+      set(json, get(action, 'payload.line.key'), value)
 
       const newContract = yaml.safeDump(json)
       const reduce = reduceContract(newContract)

@@ -4,6 +4,7 @@ import get from 'lodash.get'
 import React, { useContext, useEffect, useState } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 
+import Edit from './Edit'
 import { AppContext } from '../../../reducer/App'
 import { ContractContext } from '../../../reducer/Contract'
 
@@ -38,6 +39,16 @@ const useStyles = makeStyles(theme =>
       '&.level1': {
         borderBottom: '0 none',
       },
+      '&.level2': {
+        cursor: 'pointer',
+        transition: 'all 0.15s',
+        background: '#fff',
+        '&:hover': {
+          transform: 'scale(1.01)',
+          boxShadow: '0 2px 4px rgba(0,0,0,.15)',
+          zIndex: 2,
+        },
+      },
       '&:last-child': {
         borderBottom: '0 none',
       },
@@ -46,6 +57,16 @@ const useStyles = makeStyles(theme =>
         top: '50%',
         right: '3px',
         marginTop: '-19px',
+      },
+      '&.line-hover': {
+        cursor: 'pointer',
+        transition: 'all 0.15s',
+        '&:hover': {
+          background: '#fff',
+          transform: 'scale(1.01)',
+          boxShadow: '0 2px 4px rgba(0,0,0,.15)',
+          zIndex: 2,
+        },
       },
     },
     label: {
@@ -64,17 +85,20 @@ const useStyles = makeStyles(theme =>
   })
 )
 
-function isObject(value) {
+export function isObject(value) {
   return (
     (typeof value === 'object' || typeof value === 'function') && value !== null
   )
 }
 
-function Line({ contract, id, label, value, level }) {
+function Line({ contract, id, label, value, level, onClick }) {
   const classes = useStyles()
   const { dispatch } = useContext(ContractContext)
   return (
-    <div className={`${classes.line} level${level}`}>
+    <div
+      className={`${classes.line} level${level} ${value ? 'line-hover' : ''}`}
+      onClick={onClick}
+    >
       <span className={classes.label}>
         {label}
         {value ? ':' : ''}
@@ -86,13 +110,14 @@ function Line({ contract, id, label, value, level }) {
               {JSON.stringify(value, null, 2)}
             </pre>
           ) : (
-            <strong className={classes.value}>{value}</strong>
+            <pre className={classes.value}>{value}</pre>
           )}
         </span>
       )}
       <IconButton
         aria-label='delete'
-        onClick={() => {
+        onClick={e => {
+          e.stopPropagation()
           dispatch({
             type: 'CONTRACT_DELETE_LINE',
             payload: { filename: contract.filename, value: id },
@@ -137,10 +162,11 @@ function recurseTransform(properties, json) {
 
 export default function View() {
   const classes = useStyles()
-  const { contracts } = useContext(ContractContext)
+  const { contracts, dispatch } = useContext(ContractContext)
   const appContext = useContext(AppContext)
   const contract = contracts.find(c => c.filename === appContext.select)
   const [json, setJson] = useState('')
+  const [select, setSelect] = useState(null)
 
   useEffect(() => {
     console.log('ici')
@@ -176,9 +202,6 @@ export default function View() {
     return key
   })
 
-  console.log('################')
-  console.log(result)
-
   return (
     <div className={classes.root}>
       {result.map(item => {
@@ -191,6 +214,12 @@ export default function View() {
               contract={contract}
               id={item.key}
               level={1}
+              onClick={() => {
+                if (item.value) {
+                  console.log(item)
+                  setSelect(item)
+                }
+              }}
             />
             {get(item, 'children', []).length > 0 && (
               <div
@@ -205,6 +234,10 @@ export default function View() {
                     contract={contract}
                     id={line.key}
                     level={2}
+                    onClick={() => {
+                      console.log(line)
+                      setSelect(line)
+                    }}
                   />
                 ))}
               </div>
@@ -212,6 +245,19 @@ export default function View() {
           </div>
         )
       })}
+      <Edit
+        onClose={() => {
+          setSelect(null)
+        }}
+        onValidate={value => {
+          setSelect(null)
+          dispatch({
+            type: 'CONTRACT_LINE',
+            payload: { filename: appContext.select, line: select, value },
+          })
+        }}
+        item={select}
+      />
     </div>
   )
 }

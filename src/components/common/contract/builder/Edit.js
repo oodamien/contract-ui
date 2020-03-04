@@ -1,5 +1,4 @@
 import Button from '@material-ui/core/Button'
-import ButtonBase from '@material-ui/core/ButtonBase'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -7,13 +6,26 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
+import get from 'lodash.get'
 import React, { useEffect } from 'react'
+
+import { isObject } from './View'
 
 function Edit({ onClose, onValidate, item }) {
   const [value, setValue] = React.useState('')
+  const [isUpdate, setIsUpdate] = React.useState(false)
 
   useEffect(() => {
-    setValue('')
+    const val = get(item, 'value', '')
+    if (val !== '') {
+      setIsUpdate(true)
+    }
+    if (isObject(val)) {
+      setValue(JSON.stringify(val, null, 2))
+    } else {
+      setValue(val)
+    }
+    // isObject
   }, [item])
 
   return (
@@ -53,7 +65,7 @@ function Edit({ onClose, onValidate, item }) {
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
           <Button type='submit' color='primary'>
-            Add the property
+            {isUpdate ? 'Update property' : 'Add property'}
           </Button>
         </DialogActions>
       </form>
