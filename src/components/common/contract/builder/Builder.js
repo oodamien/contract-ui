@@ -38,9 +38,7 @@ function render(
         button
         key={`li${key}`}
         onClick={() => {
-          console.log(item.key)
           const value = get(contract, `json.${item.key}`, '')
-          console.log(contract.JSON)
           setSelect({ ...item, value })
         }}
       >

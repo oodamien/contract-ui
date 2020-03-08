@@ -5,15 +5,18 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import PropTypes from 'prop-types'
+import Tab from '@material-ui/core/Tab'
+import Tabs from '@material-ui/core/Tabs'
 import TextField from '@material-ui/core/TextField'
 import get from 'lodash.get'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { isObject } from './View'
+import { isObject } from '../../../utils/Api'
 
 function Edit({ onClose, onValidate, item }) {
-  const [value, setValue] = React.useState('')
-  const [isUpdate, setIsUpdate] = React.useState(false)
+  const [value, setValue] = useState('')
+  const [isUpdate, setIsUpdate] = useState(false)
+  const [tab, setTab] = useState('text')
 
   useEffect(() => {
     const val = get(item, 'value', '')
@@ -25,11 +28,10 @@ function Edit({ onClose, onValidate, item }) {
     } else {
       setValue(val)
     }
-    // isObject
   }, [item])
 
   return (
-    <Dialog open={item !== null} onClose={onClose}>
+    <Dialog open={item !== null} onClose={onClose} fullWidth='md' maxWidth='md'>
       <form
         onSubmit={e => {
           e.preventDefault()
@@ -44,11 +46,28 @@ function Edit({ onClose, onValidate, item }) {
             ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
             aliquip ex ea commodo consequat.
           </DialogContentText>
+
+          <Tabs
+            value={tab}
+            onChange={val => {
+              setTab(val)
+            }}
+            variant='fullWidth'
+            indicatorColor='secondary'
+            textColor='secondary'
+            aria-label='icon label tabs example'
+          >
+            <Tab value='text' label='Text' />
+            <Tab value='json' label='JSON' />
+            <Tab value='keyvalue' label='Key/Value' />
+          </Tabs>
+
           <TextField
             id='standard-multiline-flexible'
             label='Value (string, json, ...)'
             multiline
-            rowsMax='4'
+            rows='10'
+            rowsMax='30'
             value={value}
             autoFocus
             fullWidth
@@ -71,6 +90,10 @@ function Edit({ onClose, onValidate, item }) {
       </form>
     </Dialog>
   )
+}
+
+Edit.defaultProps = {
+  item: null,
 }
 
 Edit.propTypes = {

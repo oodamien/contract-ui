@@ -28,6 +28,7 @@
     ],
     "react/no-find-dom-node": 0,
     "class-methods-use-this": "off",
+    "react/forbid-prop-types": "off",
     "jsx-a11y/anchor-is-valid": [
       "error",
       {

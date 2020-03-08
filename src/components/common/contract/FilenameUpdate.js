@@ -7,11 +7,22 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import React, { useContext } from 'react'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
 
 import { AppContext } from '../../reducer/App'
 import { ContractContext } from '../../reducer/Contract'
 
+const useStyles = makeStyles(theme =>
+  createStyles({
+    button: {
+      textDecoration: 'none',
+      color: theme.palette.text.primary,
+    },
+  })
+)
+
 function FilenameUpdate({ children }) {
+  const classes = useStyles()
   const { contracts, dispatch } = useContext(ContractContext)
   const appContext = useContext(AppContext)
   const contract = contracts.find(c => c.filename === appContext.select)
@@ -42,14 +53,17 @@ function FilenameUpdate({ children }) {
 
   return (
     <>
-      <span
-        onClick={() => {
+      <a
+        href='/#'
+        className={classes.button}
+        onClick={e => {
+          e.preventDefault()
           setFilename(contract.filename)
           setOpen(true)
         }}
       >
         {children}
-      </span>
+      </a>
       <Dialog
         open={open}
         onClose={closeDialog}

@@ -5,8 +5,6 @@ import unset from 'lodash.unset'
 import yaml from 'js-yaml'
 import React, { useReducer } from 'react'
 
-import schema from '../../../dev/api.json'
-
 function reducerHistory(currentHistory, newPresent) {
   const { present, past } = currentHistory
   if (present === newPresent) {
@@ -129,18 +127,13 @@ function reducer(state, action) {
       const target = contracts.find(
         contract => contract.filename === get(action, 'payload.filename')
       )
-
       const json = get(target, 'json', {})
       let value = get(action, 'payload.value')
-
       try {
         value = JSON.parse(value)
       } catch (e) {
         value = get(action, 'payload.value')
       }
-
-      console.log(value)
-
       set(json, get(action, 'payload.line.key'), value)
 
       const newContract = yaml.safeDump(json)

@@ -23,6 +23,71 @@ export const getSchema = function getSchema(url) {
   })
 }
 
+export const isObject = function isObject(value) {
+  return (
+    (typeof value === 'object' || typeof value === 'function') && value !== null
+  )
+}
+
+function recurseTransform(properties, json) {
+  const result = []
+  Object.keys(json).map(key => {
+    const value = get(json, key)
+    const valueIsObject =
+      (typeof value === 'object' || typeof value === 'function') &&
+      value !== null
+
+    const item = properties.find(it => it.name === key)
+    if (item) {
+      if (valueIsObject && get(item, 'children', []).length > 0) {
+        const child = recurseTransform(item.children, value)
+        // result.push({ key, child })
+        result.push(...child)
+      } else {
+        result.push({
+          name: key,
+          key: item.key,
+          value,
+        })
+      }
+    } else {
+      console.log('TODO')
+    }
+    return key
+  })
+  return result
+}
+
+export const jsonToTree = function jsonToTree(json, properties) {
+  const result = []
+  Object.keys(json).map(key => {
+    const value = get(json, key)
+    const valueIsObject =
+      (typeof value === 'object' || typeof value === 'function') &&
+      value !== null
+
+    const item = properties.find(it => it.key === key)
+
+    if (item) {
+      if (valueIsObject && item.children.length > 0) {
+        const children = recurseTransform(item.children, value)
+        result.push({ key, value: '', children })
+      } else {
+        result.push({
+          name: key,
+          key,
+          value,
+        })
+      }
+    } else {
+      console.log('TODO')
+    }
+
+    return key
+  })
+  return result
+}
+
 export const getConfig = function getConfig(json) {
   const properties = get(json, 'properties', {})
   const items = Object.keys(properties).sort()
