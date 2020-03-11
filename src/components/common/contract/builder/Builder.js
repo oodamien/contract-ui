@@ -9,7 +9,7 @@ import get from 'lodash.get'
 import React, { useContext, useState } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 
-import Edit from './Edit'
+import Modal from './modal/Modal'
 import View from './View'
 import useWindowDimensions from '../../../utils/WindowDimensions'
 import { AppContext } from '../../../reducer/App'
@@ -197,7 +197,7 @@ export default function Builder() {
           )
         )}
       </List>
-      <Edit
+      <Modal
         onClose={() => {
           setSelect(null)
         }}

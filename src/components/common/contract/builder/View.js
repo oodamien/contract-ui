@@ -2,8 +2,8 @@ import get from 'lodash.get'
 import React, { useContext, useEffect, useState } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 
-import Edit from './Edit'
 import Line from './Line'
+import Modal from './modal/Modal'
 import { AppContext } from '../../../reducer/App'
 import { ContractContext } from '../../../reducer/Contract'
 import { jsonToTree } from '../../../utils/Api'
@@ -90,7 +90,7 @@ export default function View() {
           </div>
         )
       })}
-      <Edit
+      <Modal
         onClose={() => {
           setSelect(null)
         }}
