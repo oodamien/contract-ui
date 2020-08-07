@@ -92,7 +92,7 @@
     "lodash.unset": "^4.5.2",
     "monaco-editor": "^0.20.0",
     "prism-react-renderer": "^1.0.2",
-    "prismjs": "^1.19.0",
+    "prismjs": "^1.21.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.10.1",
     "react": "^16.12.0",
